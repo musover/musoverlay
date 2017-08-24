@@ -1,0 +1,23 @@
+--- a/CMakeLists.txt	2016-04-11 17:22:30.438543000 +0100
++++ b/CMakeLists.txt	2016-04-11 17:23:08.134543000 +0100
+@@ -178,7 +178,7 @@
+ CHECK_INCLUDE_FILES(stdint.h HAVE_STDINT_H)
+ CHECK_INCLUDE_FILES(byteswap.h HAVE_BYTESWAP_H)
+ CHECK_LIBRARY_EXISTS(gypsy gypsy_control_get_default "" GYPSY_FOUND)
+-CHECK_INCLUDE_FILES(libspeechd.h HAVE_LIBSPEECHD)
++CHECK_INCLUDE_FILES(speech-dispatcher/libspeechd.h HAVE_LIBSPEECHD)
+ CHECK_INCLUDE_FILES(sys/socket.h HAVE_SOCKET)
+ CHECK_INCLUDE_FILES(sys/shm.h HAVE_SHMEM)
+ CHECK_FUNCTION_EXISTS(snprintf   HAVE_SNPRINTF)
+
+--- a/navit/speech/speech_dispatcher/speech_speech_dispatcher.c	2016-04-11 17:30:28.697543000 +0100
++++ b/navit/speech/speech_dispatcher/speech_speech_dispatcher.c	2016-04-11 17:31:07.046543000 +0100
+@@ -27,7 +27,7 @@
+ #include <glib.h>
+ #include <stdarg.h>
+ #include "config.h"
+-#include <libspeechd.h>
++#include <speech-dispatcher/libspeechd.h>
+ #include "plugin.h"
+ #include "speech.h"
+ 
