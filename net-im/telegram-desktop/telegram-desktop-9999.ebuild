@@ -24,6 +24,7 @@ SLOT="0"
 IUSE=""
 
 RDEPEND="
+	>=dev-util/cmake-3.8.0
 	dev-libs/libappindicator:3
 	dev-libs/openssl:0
 	dev-util/google-breakpad
