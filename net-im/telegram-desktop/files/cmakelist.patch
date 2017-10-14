@@ -169,7 +169,7 @@ than optimal building process
 +    TDESKTOP_DISABLE_AUTOUPDATE
 +    __STDC_FORMAT_MACROS)
 +
-+set(CMAKE_AUTOMOC_MOC_OPTIONS ${CMAKE_AUTOMOC_MOC_OPTIONS} "-b" "Telegram_pch/stdafx.h");
++set(CMAKE_AUTOMOC_MOC_OPTIONS ${CMAKE_AUTOMOC_MOC_OPTIONS} "-b" "Telegram_pch/stdafx.h")
 +
 +install(TARGETS Telegram RUNTIME DESTINATION bin)
 +install(PROGRAMS ${CMAKE_SOURCE_DIR}/../lib/xdg/telegramdesktop.desktop DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
