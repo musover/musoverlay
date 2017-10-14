@@ -1,6 +1,4 @@
-Source: Gentoo ( reagentoo overlay )
-Reason: Allow use of QT >5.6.0
-
+Description: Downgrade Qt version
 Author: Nicholas Guriev <guriev-ns@ya.ru>
 Forwarded: no
 Last-Update: 2017-03-31

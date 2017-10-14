@@ -1,7 +1,3 @@
-Source: Gentoo ( reagentoo overlay )
-Upstream: No
-Reason: Saves us from using telegram's patched QT
-
 diff --git a/Telegram/SourceFiles/qt_functions.cpp b/Telegram/SourceFiles/qt_functions.cpp
 new file mode 100644
 index 0000000..4a722b8

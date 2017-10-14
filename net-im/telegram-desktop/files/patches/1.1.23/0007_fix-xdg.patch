@@ -1,7 +1,3 @@
-Source: Gentoo ( reagentoo overlay )
-Upstream: No
-Reason: Use correct data in desktop files
-
 diff --git a/lib/xdg/telegramdesktop.appdata.xml b/lib/xdg/telegramdesktop.appdata.xml
 index 7bcf8d8..4508c01 100644
 --- a/lib/xdg/telegramdesktop.appdata.xml

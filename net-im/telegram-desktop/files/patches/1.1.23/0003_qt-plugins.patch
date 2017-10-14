@@ -1,29 +1,22 @@
-Source: Gentoo (reagentoo overlay)
-Upstream: No
-Reason: This patch makes telegram-desktop use system-wide qt-plugins
+This patch makes telegram-desktop use system-wide qt-plugins, but not static
+diff --git a/Telegram/SourceFiles/main.cpp b/Telegram/SourceFiles/main.cpp
 --- a/Telegram/SourceFiles/main.cpp
 +++ b/Telegram/SourceFiles/main.cpp
-@@ -38,6 +38,7 @@ int main(int argc, char *argv[]) {
+@@ -39,6 +39,13 @@ int main(int argc, char *argv[]) {
  	// both are finished in Application::closeApplication
  	Logs::start(); // must be started before Platform is started
  	Platform::start(); // must be started before QApplication is created
++#if defined(Q_OS_LINUX64)
++	QCoreApplication::addLibraryPath("/usr/lib64/qt5/plugins");
++#else
 +	QCoreApplication::addLibraryPath("/usr/lib/qt5/plugins");
++#endif
++	setenv("QT_STYLE_OVERRIDE", "qwerty", false);
++	unsetenv("QT_QPA_PLATFORMTHEME");
  
  	int result = 0;
  	{
-diff --git a/Telegram/SourceFiles/platform/linux/linux_libs.h b/Telegram/SourceFiles/platform/linux/linux_libs.h
-index a8bf969c..75593540 100644
---- a/Telegram/SourceFiles/platform/linux/linux_libs.h
-+++ b/Telegram/SourceFiles/platform/linux/linux_libs.h
-@@ -29,7 +29,7 @@ extern "C" {
- } // extern "C"
- 
- #ifndef TDESKTOP_DISABLE_UNITY_INTEGRATION
--#include <unity/unity/unity.h>
-+typedef void UnityLauncherEntry;
- #endif // !TDESKTOP_DISABLE_UNITY_INTEGRATION
- 
- namespace Platform {
+diff --git a/Telegram/SourceFiles/qt_static_plugins.cpp b/Telegram/SourceFiles/qt_static_plugins.cpp
 --- a/Telegram/SourceFiles/qt_static_plugins.cpp
 +++ b/Telegram/SourceFiles/qt_static_plugins.cpp
 @@ -28,13 +28,4 @@ Q_IMPORT_PLUGIN(QWebpPlugin)

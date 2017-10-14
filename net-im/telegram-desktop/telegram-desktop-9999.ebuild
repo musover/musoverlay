@@ -1,100 +1,125 @@
 # Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-# Forked from https://data.gpo.zugaina.org/reagentoo/
-
 EAPI=6
 
-inherit savedconfig eutils gnome2-utils xdg cmake-utils \
-	    toolchain-funcs flag-o-matic multilib git-r3
+CMAKE_MIN_VERSION="3.8"
+
+inherit eutils gnome2-utils xdg cmake-utils toolchain-funcs flag-o-matic multilib git-r3 patches
 
 DESCRIPTION="Official desktop client for Telegram"
 HOMEPAGE="https://desktop.telegram.org"
-EGIT_REPO_URI="https://github.com/telegramdesktop/tdesktop.git"
 
-if [[ ${PV} == 9999 ]]; then
+if [[ "${PV}" == 9999 ]]; then
 	KEYWORDS=""
+	EGIT_BRANCH="dev"
 else
 	EGIT_COMMIT="v${PV}"
 	KEYWORDS="~x86 ~amd64"
 fi
 
+EGIT_REPO_URI="https://github.com/telegramdesktop/tdesktop"
+
 LICENSE="GPL-3-with-openssl-exception"
 SLOT="0"
-IUSE=""
+IUSE="custom-api-id debug +wide-baloons +pulseaudio +gtk3"
+# upstream-api-id"
 
-RDEPEND="
-	>=dev-util/cmake-3.8.0
-	dev-libs/libappindicator:3
-	dev-libs/openssl:0
-	dev-util/google-breakpad
-	=dev-qt/qtcore-5.9*:5
-	=dev-qt/qtgui-5.9*:5[jpeg,png,xcb]
+COMMON_DEPEND="
+	dev-qt/qtcore:5
+	dev-qt/qtdbus:5
+	dev-qt/qtgui:5[xcb,jpeg,png]
+	dev-qt/qtwidgets[xcb,png]
 	dev-qt/qtnetwork
 	dev-qt/qtimageformats
-	dev-qt/qtwidgets[png,xcb]
-	media-libs/openal
-	media-libs/opus
-	media-sound/pulseaudio
-	sys-libs/zlib[minizip]
 	virtual/ffmpeg
-	x11-libs/gtk+:3
+	media-libs/opus
 	x11-libs/libdrm
 	x11-libs/libva[X,drm]
+	sys-libs/zlib[minizip]
+	gtk3? (
+		x11-libs/gtk+:3
+		dev-libs/libappindicator:3
+		|| (
+			<dev-qt/qtgui-5.7:5[gtkstyle]
+			>=dev-qt/qtgui-5.7:5[gtk(+)]
+		)
+	)
+	media-libs/openal
+	dev-libs/openssl:0
 	x11-libs/libX11
+	dev-util/google-breakpad
 	!net-im/telegram
 	!net-im/telegram-desktop-bin
+	pulseaudio? ( media-sound/pulseaudio )
 "
 
-DEPEND="${RDEPEND}
+RDEPEND="
+	${COMMON_DEPEND}
+"
+
+DEPEND="
 	virtual/pkgconfig
+	${COMMON_DEPEND}
 "
 
 CMAKE_USE_DIR="${S}/Telegram"
 
-PATCHES=("${FILESDIR}")
-
 src_prepare() {
-	default
+	patches_src_prepare
+#	cmake-utils_src_prepare
+### cmake-utils_src_prepare emulation {{{
+	_cmake_cleanup_cmake
+	# make ${S} read-only in order to detect broken build-systems
+	if [[ ${CMAKE_UTILS_QA_SRC_DIR_READONLY} && ! ${CMAKE_IN_SOURCE_BUILD} ]]; then
+		chmod -R a-w "${S}"
+	fi
 
-	cat > config.h << "EOF"
-#pragma once
+	_CMAKE_UTILS_SRC_PREPARE_HAS_RUN=1
+### cmake-utils_src_prepare emulation }}}
 
-/* the default values for these are my own app id.
- * if you edit this, you should get your own at
- * https://core.telegram.org/api/obtaining_api_id */
-#define TELEGRAM_API_ID   33266
-#define TELEGRAM_API_HASH "8b40dc9cf6427eb16c493e78ac4630ac"
-
-/* original telegram desktop key */
-/* #define TELEGRAM_API_ID   17349 */
-/* #define TELEGRAM_API_HASH "344583e45741c457fe1862106095a5eb" */
-
-/* change these to any font name to override the defaults.
-   example: qsl("Arial") */
-#define TELEGRAM_FT_OVERRIDE           qsl("")
-#define TELEGRAM_FT_SEMIBOLD_OVERRIDE  qsl("")
-#define TELEGRAM_FT_MONOSPACE_OVERRIDE qsl("")
-
-EOF
-
-	restore_config config.h
-
-	mv "${S}"/lib/xdg/telegram{,-}desktop.desktop || \
-		die "Failed to fix .desktop-file name"
+	if use custom-api-id; then
+		if [[ -n "${TELEGRAM_CUSTOM_API_ID}" ]] && [[ -n "${TELEGRAM_CUSTOM_API_HASH}" ]]; then
+			(
+				echo 'static const int32 ApiId = '"${TELEGRAM_CUSTOM_API_ID}"';'
+				echo 'static const char *ApiHash = "'"${TELEGRAM_CUSTOM_API_HASH}"'";'
+			) > custom_api_id.h
+		else
+			eerror ""
+			eerror "It seems you did not set one or both of TELEGRAM_CUSTOM_API_ID and TELEGRAM_CUSTOM_API_HASH variables,"
+			eerror "which are required for custom-api-id USE-flag."
+			eerror "You can set them either in:"
+			eerror "- /etc/portage/make.conf (globally, so all applications you'll build will see that ID and HASH"
+			eerror "- /etc/portage/env/${CATEGORY}/${PN} (privately for this package builds)"
+			eerror ""
+			die "You should correctly set TELEGRAM_CUSTOM_API_ID && TELEGRAM_CUSTOM_API_HASH variables if you want custom-api-id USE-flag"
+		fi
+	fi
+	mv "${S}"/lib/xdg/telegram{,-}desktop.desktop || die "Failed to fix .desktop-file name"
 }
 
 src_configure() {
 	local mycxxflags=(
+#		$(usex custom-api-id '-DCUSTOM_API_ID' "$(usex upstream-api-id '' '-DGENTOO_API_ID')") # Variant for moving ebuild in the tree.
+		$(usex custom-api-id '-DCUSTOM_API_ID' '')
 		-DLIBDIR="$(get_libdir)"
+		# If you will copy this ebuild from my overlay, please don't forget to uncomment -DGENTOO_API_ID definition here and fix the patch (and manifest).
+		# And also, don't forget to get your (or Gentoo's, in case you'll move ot to the portage tree) unique ID and HASH
+
+#		-DTDESKTOP_DISABLE_CRASH_REPORTS
+#		-DTDESKTOP_DISABLE_REGISTER_CUSTOM_SCHEME
+#		-DTDESKTOP_DISABLE_DESKTOP_FILE_GENERATION
 	)
 
 	local mycmakeargs=(
 		-DCMAKE_CXX_FLAGS:="${mycxxflags[*]}"
 		-DBREAKPAD_INCLUDE_DIR="/usr/include/breakpad"
-		-DBREAKPAD_LIBRARY_DIR=\
-			"/usr/$(get_libdir)/libbreakpad_client.a"
+		-DBREAKPAD_LIBRARY_DIR="/usr/$(get_libdir)/libbreakpad_client.a"
 	)
+
+	use gtk3 || {
+		mycmakeargs+=("-DGTK=OFF")
+	}
 
 	cmake-utils_src_configure
 }
@@ -109,8 +134,6 @@ src_install() {
 			"${S}/Telegram/Resources/art/icon${icon_size}.png" \
 			telegram-desktop.png
 	done
-
-	save_config config.h
 }
 
 pkg_preinst() {
