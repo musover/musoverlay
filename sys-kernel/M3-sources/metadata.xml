@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+<maintainer type="person">
+<email>meoberwhagby@getbackinthe.kitchen</email>
+</maintainer>
+<use>
+	<flag name="experimental">Applies the extra GCC cpu type options patch, like in sys-kernel/gentoo-sources</flag>
+</use>
+</pkgmetadata>
