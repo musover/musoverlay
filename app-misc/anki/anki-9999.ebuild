@@ -17,7 +17,7 @@ KEYWORDS=""
 
 DEPEND=""
 RDEPEND="${PYTHON_DEPS}
-	>=dev-python/PyQt5-5.9[svg,webengine,network,widgets,gui,webchannel,${PYTHON_USEDEP}]
+	>=dev-python/PyQt5-5.9[svg,webengine,network,widgets,gui,webchannel,printsupport,${PYTHON_USEDEP}]
 	>=dev-python/httplib2-0.7.4[${PYTHON_USEDEP}]
 	dev-python/beautifulsoup:4[${PYTHON_USEDEP}]
 	dev-python/send2trash[${PYTHON_USEDEP}]
