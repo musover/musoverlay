@@ -9,7 +9,7 @@ SRC_URI="http://repo-ck.com/source/${PN}/${PN}-${PV}.tar.xz"
 RESTRICT="mirror"
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~*"
+KEYWORDS="~amd64 ~x86"
 IUSE=""
 
 DEPEND="sys-apps/kmod"
