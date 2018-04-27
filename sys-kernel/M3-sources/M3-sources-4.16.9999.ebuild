@@ -4,7 +4,11 @@
 EAPI=6
 
 UNIPATCH_STRICTORDER="yes"
+<<<<<<< HEAD
 UNIPATCH_LIST="${FILESDIR}/acso.patch"
+=======
+UNIPATCH_LIST="${FILESDIR}/*"
+>>>>>>> 8e8bf63a648f7fd240c35b7c78cab6a6c16bcade
 K_SECURITY_UNSUPPORTED="1"
 K_DEBLOB_AVAILABLE=0
 CKV="${PV/99/}"
@@ -30,11 +34,14 @@ EGIT_CHECKOUT_DIR="${WORKDIR}/linux-${KV_FULL}"
 K_EXTRAEINFO="For more info on zen-sources, and for how to report problems, see: \
 ${HOMEPAGE}, also go to #zen-sources on freenode"
 
+<<<<<<< HEAD
 src_prepare(){
 	kernel-2_src_prepare
 	epatch ${FILESDIR}/acso.patch
 }
 
+=======
+>>>>>>> 8e8bf63a648f7fd240c35b7c78cab6a6c16bcade
 pkg_setup(){
 	ewarn "Be carefull!! You are about to install live kernel sources."
 	ewarn "Git zen-sources are extremely unsupported, even from the upstream"
