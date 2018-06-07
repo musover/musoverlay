@@ -32,7 +32,7 @@ ${HOMEPAGE}, also go to #zen-sources on freenode"
 
 src_prepare(){
 	kernel-2_src_prepare
-	epatch ${FILESDIR}/acso.patch
+	epatch ${FILESDIR}/${PV/.9999/}/acso.patch
 }
 
 pkg_setup(){
