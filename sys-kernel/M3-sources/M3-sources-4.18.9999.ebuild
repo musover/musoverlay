@@ -1,6 +1,6 @@
 # Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-EAPI=6
+EAPI="6"
 inherit kernel-2 git-r3 eutils
 
 UNIPATCH_STRICTORDER="yes"
@@ -8,7 +8,6 @@ UNIPATCH_LIST="${FILESDIR}/acso.patch"
 K_SECURITY_UNSUPPORTED="1"
 K_DEBLOB_AVAILABLE=0
 CKV="${PV/99/}"
-SLOT="0"
 
 ETYPE="sources"
 
