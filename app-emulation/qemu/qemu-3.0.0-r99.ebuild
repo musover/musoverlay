@@ -217,8 +217,8 @@ PATCHES=(
 	"${FILESDIR}"/${PN}-2.5.0-cflags.patch
 	"${FILESDIR}"/${PN}-2.5.0-sysmacros.patch
 	"${FILESDIR}"/${PN}-2.11.1-capstone_include_path.patch
-	"${FILESDIR}"/${PN}-2.12.0-audio.patch
 	"${FILESDIR}"/${PN}-2.12.0-cpu-pinning.patch
+	"${FILESDIR}"/${PN}-3.0.0-pa_fixes.patch
 )
 
 STRIP_MASK="/usr/share/qemu/palcode-clipper"
