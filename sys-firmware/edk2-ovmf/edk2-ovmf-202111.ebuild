@@ -79,13 +79,10 @@ In order to use the firmware you can run qemu the following way
 		..."
 
 pkg_setup() {
-	[[ ${PV} != "999999" ]] && use binary || python-any-r1_pkg_setup
+	python-any-r1_pkg_setup
 }
 
 src_prepare() {
-	if use binary; then
-		eapply_user
-	else
 		# Bundled submodules
 		cp -rl "${WORKDIR}/openssl-${BUNDLED_OPENSSL_SUBMODULE_SHA}"/* "CryptoPkg/Library/OpensslLib/openssl/"
 		cp -rl "${WORKDIR}/brotli-${BUNDLED_BROTLI_SUBMODULE_SHA}"/* "BaseTools/Source/C/BrotliCompress/brotli/"
@@ -96,7 +93,6 @@ src_prepare() {
 			"${S}"/edksetup.sh || die "Fixing for correct Python3 support failed"
 
 		default
-	fi
 }
 
 src_compile() {
@@ -115,8 +111,6 @@ src_compile() {
 		-D SECURE_BOOT_ENABLE \
 		-D SMM_REQUIRE \
 		-D EXCLUDE_SHELL_FROM_FD"
-
-	[[ ${PV} != "999999" ]] && use binary && return
 
 	emake ARCH=${TARGET_ARCH} -C BaseTools
 
