@@ -2,8 +2,6 @@
 # Distributed under the terms of the GNU General Public License v2
 EAPI="6"
 
-UNIPATCH_STRICTORDER="yes"
-UNIPATCH_LIST="${FILESDIR}/add-acs-overrides.patch"
 K_SECURITY_UNSUPPORTED="1"
 K_DEBLOB_AVAILABLE=0
 CKV="${PV/99/}"
@@ -31,7 +29,6 @@ ${HOMEPAGE}, also go to #zen-sources on freenode"
 
 src_prepare(){
 	kernel-2_src_prepare
-	epatch ${FILESDIR}/${PV/.9999/}/add-acs-overrides.patch
 }
 
 pkg_setup(){
