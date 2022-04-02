@@ -28,6 +28,7 @@ then
 
 	KEYWORDS=""
 else
+	RESTRICT="mirror"
 	MY_PN="tdesktop"
 	MY_P="${MY_PN}-${PV}-full"
 
