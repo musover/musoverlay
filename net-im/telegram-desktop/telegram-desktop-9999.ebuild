@@ -141,6 +141,7 @@ git_unpack() {
 
 	EGIT_REPO_URI="https://code.qt.io/qt/qtbase.git"
 	EGIT_CHECKOUT_DIR="${WORKDIR}"/Libraries/qtbase
+	EGIT_OVERRIDE_BRANCH_QT_QTBASE="${QTBASE_VER}"
 
 	git-r3_src_unpack
 
