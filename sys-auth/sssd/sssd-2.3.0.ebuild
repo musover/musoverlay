@@ -218,7 +218,7 @@ multilib_src_install_all() {
 	insopts -m644
 	newins "${S}"/src/examples/logrotate sssd
 
-	newconfd "${FILESDIR}"/sssd.conf sssd
+	#newconfd "${FILESDIR}"/sssd.conf sssd
 	newinitd "${FILESDIR}"/sssd sssd
 
 	keepdir /var/lib/sss/db
