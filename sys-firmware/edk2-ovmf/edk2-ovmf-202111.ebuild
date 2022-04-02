@@ -11,7 +11,7 @@ inherit python-any-r1 readme.gentoo-r1
 DESCRIPTION="UEFI firmware for 64-bit x86 virtual machines"
 HOMEPAGE="https://github.com/tianocore/edk2"
 
-BUNDLED_OPENSSL_SUBMODULE_SHA="55e9d8cfffc1a40b0ab72e014ff62d5ef2a0ed63"
+BUNDLED_OPENSSL_SUBMODULE_SHA="ac3cef223a4c61d6bee34527b6d4c8c6432494a7"
 BUNDLED_BROTLI_SUBMODULE_SHA="666c3280cc11dc433c303d79a83d4ffbdd12cc8d"
 
 # TODO: talk with tamiko about unbundling (mva)
@@ -25,6 +25,7 @@ SRC_URI="
 		https://github.com/openssl/openssl/archive/${BUNDLED_OPENSSL_SUBMODULE_SHA}.tar.gz -> openssl-${BUNDLED_OPENSSL_SUBMODULE_SHA}.tar.gz
 		https://github.com/google/brotli/archive/${BUNDLED_BROTLI_SUBMODULE_SHA}.tar.gz -> brotli-${BUNDLED_BROTLI_SUBMODULE_SHA}.tar.gz
 	)
+	https://github.com/musover/musoverlay/blob/master/sys-firmware/edk2-ovmf/files/${P}-qemu-firmware.tar.xz?raw=true  -> ${P}-qemu-firmware.tar.xz
 "
 
 LICENSE="BSD-2 MIT"
@@ -82,7 +83,9 @@ pkg_setup() {
 	python-any-r1_pkg_setup
 }
 
+
 src_prepare() {
+		mv "${WORKDIR}/edk2-edk2-stable202105/qemu" "${S}/"
 		# Bundled submodules
 		cp -rl "${WORKDIR}/openssl-${BUNDLED_OPENSSL_SUBMODULE_SHA}"/* "CryptoPkg/Library/OpensslLib/openssl/"
 		cp -rl "${WORKDIR}/brotli-${BUNDLED_BROTLI_SUBMODULE_SHA}"/* "BaseTools/Source/C/BrotliCompress/brotli/"
@@ -94,6 +97,7 @@ src_prepare() {
 
 		default
 }
+
 
 src_compile() {
 	TARGET_ARCH=X64
