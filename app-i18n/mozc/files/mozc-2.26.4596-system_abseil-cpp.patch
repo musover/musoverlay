@@ -1,0 +1,742 @@
+https://github.com/google/mozc/issues/490
+
+--- /src/base/absl.gyp
++++ /src/base/absl.gyp
+@@ -28,247 +28,436 @@
+ # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ {
+-  'variables': {
+-    'absl_srcdir': '<(DEPTH)/third_party/abseil-cpp/absl',
+-    'gen_absl_dir': '<(SHARED_INTERMEDIATE_DIR)/third_party/abseil-cpp/absl',
+-  },
++  'conditions': [
++    ['use_system_abseil_cpp==0', {
++      'variables': {
++        'absl_srcdir': '<(DEPTH)/third_party/abseil-cpp/absl',
++        'gen_absl_dir': '<(SHARED_INTERMEDIATE_DIR)/third_party/abseil-cpp/absl',
++      },
++    }],
++  ],
+   'targets': [
+     {
+       'target_name': 'absl_base',
+-      'type': 'static_library',
+       'toolsets': ['host', 'target'],
+-      'sources': [
+-        '<(absl_srcdir)/base/internal/cycleclock.cc',
+-        '<(absl_srcdir)/base/internal/low_level_alloc.cc',
+-        '<(absl_srcdir)/base/internal/raw_logging.cc',
+-        '<(absl_srcdir)/base/internal/spinlock.cc',
+-        '<(absl_srcdir)/base/internal/spinlock_wait.cc',
+-        '<(absl_srcdir)/base/internal/sysinfo.cc',
+-        '<(absl_srcdir)/base/internal/thread_identity.cc',
+-        '<(absl_srcdir)/base/internal/throw_delegate.cc',
+-        '<(absl_srcdir)/base/internal/unscaledcycleclock.cc',
+-        '<(absl_srcdir)/base/log_severity.cc',
+-        '<(absl_srcdir)/profiling/internal/exponential_biased.cc',
+-      ],
+-      'dependencies': [
+-        'absl_hash_internal',
+-      ],
+-      'msvs_disabled_warnings': [
+-        # 'type' : forcing value to bool 'true' or 'false'
+-        # (performance warning)
+-        # http://msdn.microsoft.com/en-us/library/b6801kcy.aspx
+-        '4800',
+-      ],
++      'conditions': [
++        ['use_system_abseil_cpp==1', {
++          'type': 'none',
++          'all_dependent_settings': {
++            'link_settings': {
++              'libraries': [
++                '-labsl_base -labsl_malloc_internal -labsl_raw_logging_internal -labsl_spinlock_wait -labsl_throw_delegate -labsl_log_severity -labsl_exponential_biased',
++              ],
++            },
++          },
++        },{
++            'type': 'static_library',
++            'sources': [
++                # libabsl_base
++                '<(absl_srcdir)/base/internal/cycleclock.cc',
++                # libabsl_malloc_internal
++                '<(absl_srcdir)/base/internal/low_level_alloc.cc',
++                # libabsl_raw_logging_internakl
++                '<(absl_srcdir)/base/internal/raw_logging.cc',
++                # libabsl_base
++                '<(absl_srcdir)/base/internal/spinlock.cc',
++                # libabsl_spinlock_wait
++                '<(absl_srcdir)/base/internal/spinlock_wait.cc',
++                # libabsl_base
++                '<(absl_srcdir)/base/internal/sysinfo.cc',
++                '<(absl_srcdir)/base/internal/thread_identity.cc',
++                # libabsl_throw_delegate
++                '<(absl_srcdir)/base/internal/throw_delegate.cc',
++                # libabsl_base
++                '<(absl_srcdir)/base/internal/unscaledcycleclock.cc',
++                # libabsl_log_severity
++                '<(absl_srcdir)/base/log_severity.cc',
++                # libabsl_exponential_biased
++                '<(absl_srcdir)/profiling/internal/exponential_biased.cc',
++            ],
++            'msvs_disabled_warnings': [
++            # 'type' : forcing value to bool 'true' or 'false'
++            # (performance warning)
++            # http://msdn.microsoft.com/en-us/library/b6801kcy.aspx
++            '4800',
++            ]}]],
++        'dependencies': [
++            'absl_hash_internal',
++        ]
+     },
+     {
+       'target_name': 'absl_debugging',
+-      'type': 'static_library',
+       'toolsets': ['host', 'target'],
+-      'sources': [
+-        '<(absl_srcdir)/debugging/stacktrace.cc',
+-        '<(absl_srcdir)/debugging/symbolize.cc',
+-        '<(absl_srcdir)/debugging/internal/address_is_readable.cc',
+-        '<(absl_srcdir)/debugging/internal/demangle.cc',
+-        '<(absl_srcdir)/debugging/internal/elf_mem_image.cc',
+-        '<(absl_srcdir)/debugging/internal/vdso_support.cc',
+-      ],
+-      'dependencies': [
+-        'absl_base',
+-      ],
++      'conditions': [
++        ['use_system_abseil_cpp==1', {
++          'type': 'none',
++          'all_dependent_settings': {
++            'link_settings': {
++              'libraries': [
++                '-labsl_stacktrace -labsl_symbolize -labsl_debugging_internal -labsl_demangle_internal',
++              ],
++            },
++          },
++        },{
++            'type': 'static_library',
++            'sources': [
++                # libabsl_stacktrace
++                '<(absl_srcdir)/debugging/stacktrace.cc',
++                # libabsl_symbolize
++                '<(absl_srcdir)/debugging/symbolize.cc',
++                # libabsl_debugging_internal
++                '<(absl_srcdir)/debugging/internal/address_is_readable.cc',
++                # libabsl_demangle_internal
++                '<(absl_srcdir)/debugging/internal/demangle.cc',
++                # libabsl_debugging_internal
++                '<(absl_srcdir)/debugging/internal/elf_mem_image.cc',
++                '<(absl_srcdir)/debugging/internal/vdso_support.cc',
++            ]
++        }]],
++        'dependencies': [
++                'absl_base',
++        ]
+     },
+     {
+       'target_name': 'absl_flags',
+-      'type': 'static_library',
+       'toolsets': ['host', 'target'],
+-      'sources': [
+-        '<(absl_srcdir)/flags/commandlineflag.cc',
+-        '<(absl_srcdir)/flags/commandlineflag.h',
+-        '<(absl_srcdir)/flags/usage.cc',
+-        '<(absl_srcdir)/flags/usage.h',
+-        '<(absl_srcdir)/flags/flag.cc',
+-        '<(absl_srcdir)/flags/flag.h',
+-        '<(absl_srcdir)/flags/config.h',
+-        '<(absl_srcdir)/flags/declare.h',
+-        '<(absl_srcdir)/flags/marshalling.cc',
+-        '<(absl_srcdir)/flags/marshalling.h',
+-        '<(absl_srcdir)/flags/parse.cc',
+-        '<(absl_srcdir)/flags/parse.h',
+-        '<(absl_srcdir)/flags/reflection.cc',
+-        '<(absl_srcdir)/flags/reflection.h',
+-        '<(absl_srcdir)/flags/usage_config.cc',
+-        '<(absl_srcdir)/flags/usage_config.h',
+-      ],
+-      'dependencies': [
+-        'absl_flags_internal',
+-        'absl_hash_internal',
+-        'absl_synchronization',
+-      ],
++      'conditions': [
++        ['use_system_abseil_cpp==1', {
++          'type': 'none',
++          'all_dependent_settings': {
++            'link_settings': {
++              'libraries': [
++                '-labsl_flags_commandlineflag -labsl_flags_usage -labsl_flags -labsl_flags_config -labsl_flags_marshalling -labsl_flags_parse -labsl_flags_reflection',
++              ],
++            },
++          },
++        },{
++            'type': 'static_library',
++            'sources': [
++                # libabsl_commandlineflag
++                '<(absl_srcdir)/flags/commandlineflag.cc',
++                '<(absl_srcdir)/flags/commandlineflag.h',
++                # libabsl_usage
++                '<(absl_srcdir)/flags/usage.cc',
++                '<(absl_srcdir)/flags/usage.h',
++                # libabsl_flag
++                '<(absl_srcdir)/flags/flag.cc',
++                '<(absl_srcdir)/flags/flag.h',
++                # libabsl_config
++                '<(absl_srcdir)/flags/config.h',
++                # libabsl_flag
++                '<(absl_srcdir)/flags/declare.h',
++                # libabsl_marshalling
++                '<(absl_srcdir)/flags/marshalling.cc',
++                '<(absl_srcdir)/flags/marshalling.h',
++                # libabsl_parse
++                '<(absl_srcdir)/flags/parse.cc',
++                '<(absl_srcdir)/flags/parse.h',
++                # libabsl_reflection
++                '<(absl_srcdir)/flags/reflection.cc',
++                '<(absl_srcdir)/flags/reflection.h',
++                # libabsl_config
++                '<(absl_srcdir)/flags/usage_config.cc',
++                '<(absl_srcdir)/flags/usage_config.h',
++            ]
++        }]],
++        'dependencies': [
++            'absl_flags_internal',
++            'absl_hash_internal',
++            'absl_synchronization',
++        ]
+     },
+     {
+       'target_name': 'absl_flags_internal',
+-      'type': 'static_library',
+       'toolsets': ['host', 'target'],
+-      'sources': [
+-        '<(absl_srcdir)/flags/internal/commandlineflag.cc',
+-        '<(absl_srcdir)/flags/internal/commandlineflag.h',
+-        '<(absl_srcdir)/flags/internal/flag.cc',
+-        '<(absl_srcdir)/flags/internal/flag.h',
+-        '<(absl_srcdir)/flags/internal/parse.h',
+-        '<(absl_srcdir)/flags/internal/path_util.h',
+-        '<(absl_srcdir)/flags/internal/private_handle_accessor.cc',
+-        '<(absl_srcdir)/flags/internal/private_handle_accessor.h',
+-        '<(absl_srcdir)/flags/internal/program_name.cc',
+-        '<(absl_srcdir)/flags/internal/program_name.h',
+-        '<(absl_srcdir)/flags/internal/registry.h',
+-        '<(absl_srcdir)/flags/internal/usage.cc',
+-        '<(absl_srcdir)/flags/internal/usage.h',
+-      ],
+-      'dependencies': [
+-        'absl_strings',
+-      ],
++      'conditions': [
++        ['use_system_abseil_cpp==1', {
++          'type': 'none',
++          'all_dependent_settings': {
++            'link_settings': {
++              'libraries': [
++                '-labsl_flags_commandlineflag_internal -labsl_flags_internal -labsl_flags_parse -labsl_flags_private_handle_accessor -labsl_flags_program_name -labsl_flags_reflection -labsl_flags_usage_internal',
++              ],
++            },
++          },
++        },{
++            'type': 'static_library',
++            'sources': [
++                # libabsl_commandlineflag_internal
++                '<(absl_srcdir)/flags/internal/commandlineflag.cc',
++                '<(absl_srcdir)/flags/internal/commandlineflag.h',
++                # libabsl_flag_internal
++                '<(absl_srcdir)/flags/internal/flag.cc',
++                '<(absl_srcdir)/flags/internal/flag.h',
++                # libabsl_parse
++                '<(absl_srcdir)/flags/internal/parse.h',
++                # libabsl_path_util
++                '<(absl_srcdir)/flags/internal/path_util.h',
++                # libabsl_private_handle_accessor
++                '<(absl_srcdir)/flags/internal/private_handle_accessor.cc',
++                '<(absl_srcdir)/flags/internal/private_handle_accessor.h',
++                # libabsl_program_name
++                '<(absl_srcdir)/flags/internal/program_name.cc',
++                '<(absl_srcdir)/flags/internal/program_name.h',
++                # libabsl_reflection
++                '<(absl_srcdir)/flags/internal/registry.h',
++                # libabsl_usage_internal
++                '<(absl_srcdir)/flags/internal/usage.cc',
++                '<(absl_srcdir)/flags/internal/usage.h',
++            ]
++        }]],
++        'dependencies': [
++            'absl_strings',
++        ]
+     },
+     {
+       'target_name': 'absl_hash_internal',
+       'toolsets': ['host', 'target'],
+-      'type': 'static_library',
+-      'sources': [
+-        '<(absl_srcdir)/container/internal/raw_hash_set.cc',
+-        '<(absl_srcdir)/hash/internal/city.cc',
+-        '<(absl_srcdir)/hash/internal/hash.cc',
+-        '<(absl_srcdir)/hash/internal/low_level_hash.cc',
+-      ],
++      'conditions': [
++        ['use_system_abseil_cpp==1', {
++          'type': 'none',
++          'all_dependent_settings': {
++            'link_settings': {
++              'libraries': [
++                '-labsl_raw_hash_set -labsl_city -labsl_hash -labsl_low_level_hash',
++              ],
++            },
++          },
++        },{
++            'type': 'static_library',
++            'sources': [
++                # libabsl_raw_hash_set
++                '<(absl_srcdir)/container/internal/raw_hash_set.cc',
++                # libabsl_city
++                '<(absl_srcdir)/hash/internal/city.cc',
++                # libabsl_hash
++                '<(absl_srcdir)/hash/internal/hash.cc',
++                # libabsl_low_level_hash
++                '<(absl_srcdir)/hash/internal/low_level_hash.cc',
++            ]}]]
+     },
+     {
+       'target_name': 'absl_numeric',
+-      'type': 'static_library',
+       'toolsets': ['host', 'target'],
+-      'sources': [
+-        '<(absl_srcdir)/numeric/int128.cc',
+-      ],
+-      'dependencies': [
+-        'absl_base',
+-      ],
++      'conditions': [
++        ['use_system_abseil_cpp==1', {
++          'type': 'none',
++          'all_dependent_settings': {
++            'link_settings': {
++              'libraries': [
++                '-labsl_int128',
++              ],
++            },
++          },
++        },{
++            'type': 'static_library',
++            'sources': [
++                # libabsl_int128
++                '<(absl_srcdir)/numeric/int128.cc',
++            ]
++        }]],
++        'dependencies': [
++            'absl_base',
++        ]
+     },
+     {
+       'target_name': 'absl_strings_internal',
+-      'type': 'static_library',
+       'toolsets': ['host', 'target'],
+-      'sources': [
+-        '<(absl_srcdir)/strings/internal/charconv_bigint.cc',
+-        '<(absl_srcdir)/strings/internal/charconv_parse.cc',
+-        '<(absl_srcdir)/strings/internal/cord_internal.cc',
+-        '<(absl_srcdir)/strings/internal/cord_rep_btree.cc',
+-        '<(absl_srcdir)/strings/internal/cord_rep_btree_navigator.cc',
+-        '<(absl_srcdir)/strings/internal/cord_rep_btree_reader.cc',
+-        '<(absl_srcdir)/strings/internal/cord_rep_consume.cc',
+-        '<(absl_srcdir)/strings/internal/cord_rep_ring.cc',
+-        '<(absl_srcdir)/strings/internal/cordz_functions.cc',
+-        '<(absl_srcdir)/strings/internal/cordz_handle.cc',
+-        '<(absl_srcdir)/strings/internal/cordz_info.cc',
+-        '<(absl_srcdir)/strings/internal/escaping.cc',
+-        '<(absl_srcdir)/strings/internal/memutil.cc',
+-        '<(absl_srcdir)/strings/internal/str_format/arg.cc',
+-        '<(absl_srcdir)/strings/internal/str_format/bind.cc',
+-        '<(absl_srcdir)/strings/internal/str_format/extension.cc',
+-        '<(absl_srcdir)/strings/internal/str_format/float_conversion.cc',
+-        '<(absl_srcdir)/strings/internal/str_format/output.cc',
+-        '<(absl_srcdir)/strings/internal/str_format/parser.cc',
+-        '<(absl_srcdir)/strings/internal/utf8.cc',
+-      ],
+-      'dependencies': [
+-        'absl_base',
+-        'absl_numeric',
+-      ],
++      'conditions': [
++        ['use_system_abseil_cpp==1', {
++          'type': 'none',
++          'all_dependent_settings': {
++            'link_settings': {
++              'libraries': [
++                '-labsl_str_format_internal -labsl_strings -labsl_cord_internal -labsl_cordz_functions -labsl_cordz_handle -labsl_cordz_info -labsl_strings_internal',
++              ],
++            },
++          },
++        },{
++            'type': 'static_library',
++            'sources': [
++                # libabsl_strings
++                '<(absl_srcdir)/strings/internal/charconv_bigint.cc',
++                '<(absl_srcdir)/strings/internal/charconv_parse.cc',
++                # libabsl_cord_internal
++                '<(absl_srcdir)/strings/internal/cord_internal.cc',
++                '<(absl_srcdir)/strings/internal/cord_rep_btree.cc',
++                '<(absl_srcdir)/strings/internal/cord_rep_btree_navigator.cc',
++                '<(absl_srcdir)/strings/internal/cord_rep_btree_reader.cc',
++                '<(absl_srcdir)/strings/internal/cord_rep_consume.cc',
++                '<(absl_srcdir)/strings/internal/cord_rep_ring.cc',
++                # libabsl_cordz_functions
++                '<(absl_srcdir)/strings/internal/cordz_functions.cc',
++                # libabsl_cordz_handle
++                '<(absl_srcdir)/strings/internal/cordz_handle.cc',
++                # libabsl_cordz_info
++                '<(absl_srcdir)/strings/internal/cordz_info.cc',
++                # libabsl_strings_internal
++                '<(absl_srcdir)/strings/internal/escaping.cc',
++                # libabsl_strings
++                '<(absl_srcdir)/strings/internal/memutil.cc',
++                # libabsl_str_format_internal
++                '<(absl_srcdir)/strings/internal/str_format/arg.cc',
++                '<(absl_srcdir)/strings/internal/str_format/bind.cc',
++                '<(absl_srcdir)/strings/internal/str_format/extension.cc',
++                '<(absl_srcdir)/strings/internal/str_format/float_conversion.cc',
++                '<(absl_srcdir)/strings/internal/str_format/output.cc',
++                '<(absl_srcdir)/strings/internal/str_format/parser.cc',
++                # libabsl_strings_internal
++                '<(absl_srcdir)/strings/internal/utf8.cc',
++            ]
++        }]],
++        'dependencies': [
++            'absl_base',
++            'absl_numeric',
++        ]
+     },
+     {
+       'target_name': 'absl_strings',
+-      'type': 'static_library',
+       'toolsets': ['host', 'target'],
+-      'sources': [
+-        '<(absl_srcdir)/strings/ascii.cc',
+-        '<(absl_srcdir)/strings/charconv.cc',
+-        '<(absl_srcdir)/strings/cord.cc',
+-        '<(absl_srcdir)/strings/escaping.cc',
+-        '<(absl_srcdir)/strings/match.cc',
+-        '<(absl_srcdir)/strings/numbers.cc',
+-        '<(absl_srcdir)/strings/str_cat.cc',
+-        '<(absl_srcdir)/strings/str_replace.cc',
+-        '<(absl_srcdir)/strings/str_split.cc',
+-        '<(absl_srcdir)/strings/string_view.cc',
+-        '<(absl_srcdir)/strings/substitute.cc',
+-      ],
+-      'dependencies': [
+-        'absl_base',
+-        'absl_numeric',
+-        'absl_strings_internal',
+-      ],
++      'conditions': [
++        ['use_system_abseil_cpp==1', {
++          'type': 'none',
++          'all_dependent_settings': {
++            'link_settings': {
++              'libraries': [
++                '-labsl_strings',
++              ],
++            },
++          },
++        },{
++            'type': 'static_library',
++            'sources': [
++                # libabsl_strings
++                '<(absl_srcdir)/strings/ascii.cc',
++                '<(absl_srcdir)/strings/charconv.cc',
++                '<(absl_srcdir)/strings/cord.cc',
++                '<(absl_srcdir)/strings/escaping.cc',
++                '<(absl_srcdir)/strings/match.cc',
++                '<(absl_srcdir)/strings/numbers.cc',
++                '<(absl_srcdir)/strings/str_cat.cc',
++                '<(absl_srcdir)/strings/str_replace.cc',
++                '<(absl_srcdir)/strings/str_split.cc',
++                '<(absl_srcdir)/strings/string_view.cc',
++                '<(absl_srcdir)/strings/substitute.cc',
++            ]
++        }]],
++        'dependencies': [
++            'absl_base',
++            'absl_numeric',
++            'absl_strings_internal',
++        ]
+     },
+     {
+       'target_name': 'absl_synchronization',
+-      'type': 'static_library',
+       'toolsets': ['host', 'target'],
+-      'sources': [
+-        '<(absl_srcdir)/synchronization/barrier.cc',
+-        '<(absl_srcdir)/synchronization/blocking_counter.cc',
+-        '<(absl_srcdir)/synchronization/blocking_counter.cc',
+-        '<(absl_srcdir)/synchronization/internal/create_thread_identity.cc',
+-        '<(absl_srcdir)/synchronization/internal/create_thread_identity.cc',
+-        '<(absl_srcdir)/synchronization/internal/graphcycles.cc',
+-        '<(absl_srcdir)/synchronization/internal/graphcycles.cc',
+-        '<(absl_srcdir)/synchronization/internal/per_thread_sem.cc',
+-        '<(absl_srcdir)/synchronization/internal/waiter.cc',
+-        '<(absl_srcdir)/synchronization/mutex.cc',
+-      ],
+-      'dependencies': [
+-        'absl_base',
+-        'absl_debugging',
+-        'absl_time',
+-        'absl_numeric'
+-      ],
++      'conditions': [
++        ['use_system_abseil_cpp==1', {
++          'type': 'none',
++          'all_dependent_settings': {
++            'link_settings': {
++              'libraries': [
++                '-labsl_synchronization -labsl_graphcycles_internal',
++              ],
++            },
++          },
++        },{
++            'type': 'static_library',
++            'sources': [
++                # libabsl_synchronization
++                '<(absl_srcdir)/synchronization/barrier.cc',
++                '<(absl_srcdir)/synchronization/blocking_counter.cc',
++                '<(absl_srcdir)/synchronization/blocking_counter.cc',
++                '<(absl_srcdir)/synchronization/internal/create_thread_identity.cc',
++                '<(absl_srcdir)/synchronization/internal/create_thread_identity.cc',
++                # libabsl_graphcycles_internal
++                '<(absl_srcdir)/synchronization/internal/graphcycles.cc',
++                '<(absl_srcdir)/synchronization/internal/graphcycles.cc',
++                # libabsl_synchronization
++                '<(absl_srcdir)/synchronization/internal/per_thread_sem.cc',
++                '<(absl_srcdir)/synchronization/internal/waiter.cc',
++                '<(absl_srcdir)/synchronization/mutex.cc',
++            ]
++        }]],
++        'dependencies': [
++            'absl_base',
++            'absl_debugging',
++            'absl_time',
++            'absl_numeric'
++        ]
+     },
+     {
+       'target_name': 'absl_time',
+-      'type': 'static_library',
+       'toolsets': ['host', 'target'],
+-      'sources': [
+-        '<(absl_srcdir)/time/civil_time.cc',
+-        '<(absl_srcdir)/time/clock.cc',
+-        '<(absl_srcdir)/time/duration.cc',
+-        '<(absl_srcdir)/time/format.cc',
+-        '<(absl_srcdir)/time/time.cc',
+-        '<(absl_srcdir)/time/internal/cctz/src/civil_time_detail.cc',
+-        '<(absl_srcdir)/time/internal/cctz/src/time_zone_fixed.cc',
+-        '<(absl_srcdir)/time/internal/cctz/src/time_zone_format.cc',
+-        '<(absl_srcdir)/time/internal/cctz/src/time_zone_if.cc',
+-        '<(absl_srcdir)/time/internal/cctz/src/time_zone_impl.cc',
+-        '<(absl_srcdir)/time/internal/cctz/src/time_zone_info.cc',
+-        '<(absl_srcdir)/time/internal/cctz/src/time_zone_libc.cc',
+-        '<(absl_srcdir)/time/internal/cctz/src/time_zone_lookup.cc',
+-        '<(absl_srcdir)/time/internal/cctz/src/time_zone_posix.cc',
+-        '<(absl_srcdir)/time/internal/cctz/src/zone_info_source.cc',
+-      ],
+-      'cflags': [
+-        '-Wno-error',
+-      ],
+-      'dependencies': [
+-        'absl_base',
+-        'absl_numeric',
+-        'absl_strings_internal',
+-      ],
++      'conditions': [
++        ['use_system_abseil_cpp==1', {
++          'type': 'none',
++          'all_dependent_settings': {
++            'link_settings': {
++              'libraries': [
++                '-labsl_time -labsl_civil_time -labsl_time_zone',
++              ],
++            },
++          },
++        },{
++            'type': 'static_library',
++            'sources': [
++                # libabsl_time
++                '<(absl_srcdir)/time/civil_time.cc',
++                '<(absl_srcdir)/time/clock.cc',
++                '<(absl_srcdir)/time/duration.cc',
++                '<(absl_srcdir)/time/format.cc',
++                '<(absl_srcdir)/time/time.cc',
++                # libabsl_civil_time
++                '<(absl_srcdir)/time/internal/cctz/src/civil_time_detail.cc',
++                # libabsl_time_zone
++                '<(absl_srcdir)/time/internal/cctz/src/time_zone_fixed.cc',
++                '<(absl_srcdir)/time/internal/cctz/src/time_zone_format.cc',
++                '<(absl_srcdir)/time/internal/cctz/src/time_zone_if.cc',
++                '<(absl_srcdir)/time/internal/cctz/src/time_zone_impl.cc',
++                '<(absl_srcdir)/time/internal/cctz/src/time_zone_info.cc',
++                '<(absl_srcdir)/time/internal/cctz/src/time_zone_libc.cc',
++                '<(absl_srcdir)/time/internal/cctz/src/time_zone_lookup.cc',
++                '<(absl_srcdir)/time/internal/cctz/src/time_zone_posix.cc',
++                '<(absl_srcdir)/time/internal/cctz/src/zone_info_source.cc',
++            ],
++            'cflags': [
++                '-Wno-error',
++            ]
++      }]],
++        'dependencies': [
++            'absl_base',
++            'absl_numeric',
++            'absl_strings_internal',
++        ]
+     },
+     {
+       'target_name': 'absl_status',
+-      'type': 'static_library',
+       'toolsets': ['host', 'target'],
+-      'sources': [
+-        '<(absl_srcdir)/status/status.cc',
+-        '<(absl_srcdir)/status/status_payload_printer.cc',
+-        '<(absl_srcdir)/status/statusor.cc',
+-      ],
+-      'dependencies': [
+-        'absl_base',
+-        'absl_strings',
+-      ],
++      'conditions': [
++        ['use_system_abseil_cpp==1', {
++          'type': 'none',
++          'all_dependent_settings': {
++            'link_settings': {
++              'libraries': [
++                '-labsl_status -labsl_statusor',
++              ],
++            },
++          },
++        },{
++            'type': 'static_library',
++            'sources': [
++                # libabsl_status
++                '<(absl_srcdir)/status/status.cc',
++                '<(absl_srcdir)/status/status_payload_printer.cc',
++                # libabsl_statusor
++                '<(absl_srcdir)/status/statusor.cc',
++            ]
++        }]],
++        'dependencies': [
++                'absl_base',
++                'absl_strings',
++        ]
+     },
+   ],
+ }
+--- /src/config/config_test.gyp
++++ /src/config/config_test.gyp
+@@ -36,6 +36,7 @@
+         'config_handler_test.cc',
+       ],
+       'dependencies': [
++        '../base/absl.gyp:absl_base',
+         '../testing/testing.gyp:gtest_main',
+         '../testing/testing.gyp:mozctest',
+         'config.gyp:config_handler',
+@@ -80,6 +81,7 @@
+         'character_form_manager_test.cc',
+       ],
+       'dependencies': [
++        '../base/absl.gyp:absl_base',
+         '../testing/testing.gyp:gtest_main',
+         'config.gyp:character_form_manager',
+       ],
+--- /src/gyp/common.gypi
++++ /src/gyp/common.gypi
+@@ -194,7 +194,13 @@
+     'include_dirs': [
+       '<(abs_depth)',
+       '<(SHARED_INTERMEDIATE_DIR)',
+-      '<(absl_dir)',
++    ],
++    'conditions': [
++      ['use_system_abseil_cpp==0', {
++        'include_dirs': [
++          '<(absl_dir)',
++        ],
++      }],
+     ],
+     'mac_framework_headers': [],
+     'target_conditions': [
+--- /src/gyp/common_win.gypi
++++ /src/gyp/common_win.gypi
+@@ -307,10 +307,16 @@
+     'include_dirs': [
+       '<(abs_depth)',
+       '<(SHARED_INTERMEDIATE_DIR)',
+-      '<(absl_dir)',
+       '<@(msvs_includes)',
+       '<(wtl_dir)/include',
+     ],
++    'conditions': [
++      ['use_system_abseil_cpp==0', {
++        'include_dirs': [
++          '<(absl_dir)',
++        ],
++      }],
++    ],
+     'msvs_configuration_attributes': {
+       'CharacterSet': '<(win_char_set_unicode)',
+     },
+--- /src/gyp/defines.gypi
++++ /src/gyp/defines.gypi
+@@ -63,6 +63,10 @@
+     # use_libibus represents if ibus library is used or not.
+     # This option is only for Linux.
+     'use_libibus%': '0',
++
++    # use_system_abseil_cpp represents if system version or bundled version
++    # of abseil-cpp library is used.
++    'use_system_abseil_cpp%': '0',
+   },
+   'target_defaults': {
+     'defines': [
+--- /src/gyp/directories.gypi
++++ /src/gyp/directories.gypi
+@@ -31,7 +31,12 @@
+   'variables': {
+     # Top directory of third party libraries.
+     'third_party_dir': '<(DEPTH)/third_party',
+-    'absl_dir': '<(DEPTH)/third_party/abseil-cpp',
++
++    'conditions': [
++      ['use_system_abseil_cpp==0', {
++        'absl_dir': '<(DEPTH)/third_party/abseil-cpp',
++      }],
++    ],
+ 
+     # Top directory of additional third party libraries.
+     'ext_third_party_dir%': '<(abs_depth)/third_party',
+--- /src/session/session_test.gyp
++++ /src/session/session_test.gyp
+@@ -221,6 +221,7 @@
+         'internal/key_event_transformer_test.cc',
+       ],
+       'dependencies': [
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../converter/converter_base.gyp:converter_mock',
+         '../engine/engine.gyp:mock_converter_engine',
+--- /src/storage/storage_test.gyp
++++ /src/storage/storage_test.gyp
+@@ -41,6 +41,7 @@
+         'tiny_storage_test.cc',
+       ],
+       'dependencies': [
++        '../base/absl.gyp:absl_base',
+         '../testing/testing.gyp:gtest_main',
+         'storage.gyp:storage',
+       ],

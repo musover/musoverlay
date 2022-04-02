@@ -13,15 +13,8 @@ if [[ "${PV}" == "9999" ]]; then
 	EGIT_REPO_URI="https://github.com/google/mozc"
 	EGIT_SUBMODULES=(src/third_party/japanese_usage_dictionary)
 else
-	MOZC_GIT_REVISION="01306d0c67c5faa203994bab281c515b9d1248fa"
-	MOZC_DATE="${PV#*_p}"
-	MOZC_DATE="${MOZC_DATE%%_p*}"
-
-	FCITX_MOZC_GIT_REVISION="0ad3cf52497fe29388e85117b5044b93e54b547e"
-	FCITX_MOZC_DATE="${PV#*_p}"
-	FCITX_MOZC_DATE="${FCITX_MOZC_DATE#*_p}"
-	FCITX_MOZC_DATE="${FCITX_MOZC_DATE%%_p*}"
-
+	MOZC_GIT_REVISION="3735608fd00111b767a121d9c78999e3c41aab2f"
+	FCITX_MOZC_GIT_REVISION="084a30af01e59471a2871291bfeee8ab4e604406"
 	JAPANESE_USAGE_DICTIONARY_GIT_REVISION="a4a66772e33746b91e99caceecced9a28507e925"
 	JAPANESE_USAGE_DICTIONARY_DATE="20180701040110"
 fi
@@ -31,9 +24,9 @@ HOMEPAGE="https://github.com/google/mozc"
 if [[ "${PV}" == "9999" ]]; then
 	SRC_URI=""
 else
-	SRC_URI="https://github.com/google/${PN}/archive/${MOZC_GIT_REVISION}.tar.gz -> ${PN}-${PV%%_p*}-${MOZC_DATE}.tar.gz
+	SRC_URI="https://github.com/google/${PN}/archive/${MOZC_GIT_REVISION}.tar.gz -> ${PN}-${PV}.tar.gz
 		https://github.com/hiroyuki-komatsu/japanese-usage-dictionary/archive/${JAPANESE_USAGE_DICTIONARY_GIT_REVISION}.tar.gz -> japanese-usage-dictionary-${JAPANESE_USAGE_DICTIONARY_DATE}.tar.gz
-		fcitx4? ( https://github.com/fcitx/${PN}/archive/${FCITX_MOZC_GIT_REVISION}.tar.gz -> fcitx-${PN}-${PV%%_p*}-${FCITX_MOZC_DATE}.tar.gz )"
+		fcitx4? ( https://github.com/fcitx/${PN}/archive/${FCITX_MOZC_GIT_REVISION}.tar.gz -> fcitx-${PN}-${PV}.tar.gz )"
 fi
 
 # Mozc: BSD
@@ -42,7 +35,7 @@ fi
 # japanese-usage-dictionary: BSD-2
 LICENSE="BSD BSD-2 ipadic public-domain unicode"
 SLOT="0"
-KEYWORDS="amd64 ~arm64 ~ppc64 x86"
+KEYWORDS="~amd64 ~arm64 ~ppc64 ~x86"
 IUSE="debug emacs fcitx4 +gui ibus renderer test"
 REQUIRED_USE="|| ( emacs fcitx4 ibus )"
 RESTRICT="!test? ( test )"
@@ -54,7 +47,7 @@ BDEPEND="$(python_gen_any_dep 'dev-python/six[${PYTHON_USEDEP}]')
 	virtual/pkgconfig
 	emacs? ( app-editors/emacs:* )
 	fcitx4? ( sys-devel/gettext )"
-DEPEND="=dev-cpp/abseil-cpp-20200923*[cxx17(+)]
+DEPEND="=dev-cpp/abseil-cpp-20211102*
 	<dev-libs/protobuf-3.19:=
 	fcitx4? (
 		app-i18n/fcitx:4
@@ -80,7 +73,7 @@ DEPEND="=dev-cpp/abseil-cpp-20200923*[cxx17(+)]
 		>=dev-cpp/gtest-1.8.0
 		dev-libs/jsoncpp
 	)"
-RDEPEND="=dev-cpp/abseil-cpp-20200923*[cxx17(+)]
+RDEPEND="=dev-cpp/abseil-cpp-20211102*
 	>=dev-libs/protobuf-3.0.0:=
 	emacs? ( app-editors/emacs:* )
 	fcitx4? (
@@ -127,14 +120,14 @@ src_unpack() {
 			git-r3_checkout https://github.com/fcitx/mozc "${WORKDIR}/fcitx-mozc"
 		fi
 	else
-		unpack ${PN}-${PV%%_p*}-${MOZC_DATE}.tar.gz
+		unpack ${PN}-${PV}.tar.gz
 		mv mozc-${MOZC_GIT_REVISION} ${P} || die
 
 		unpack japanese-usage-dictionary-${JAPANESE_USAGE_DICTIONARY_DATE}.tar.gz
 		cp -p japanese-usage-dictionary-${JAPANESE_USAGE_DICTIONARY_GIT_REVISION}/usage_dict.txt ${P}/src/third_party/japanese_usage_dictionary || die
 
 		if use fcitx4; then
-			unpack fcitx-${PN}-${PV%%_p*}-${FCITX_MOZC_DATE}.tar.gz
+			unpack fcitx-${PN}-${PV}.tar.gz
 			mv mozc-${FCITX_MOZC_GIT_REVISION} fcitx-${PN}
 		fi
 	fi
@@ -147,11 +140,11 @@ src_prepare() {
 
 	pushd "${WORKDIR}/${P}" > /dev/null || die
 
-	eapply "${FILESDIR}/${PN}-2.26.4220-system_abseil-cpp.patch"
+	eapply "${FILESDIR}/${PN}-2.26.4596-system_abseil-cpp.patch"
 	eapply "${FILESDIR}/${PN}-2.26.4220-system_gtest.patch"
 	eapply "${FILESDIR}/${PN}-2.26.4220-system_jsoncpp.patch"
 	eapply "${FILESDIR}/${PN}-2.26.4220-environmental_variables.patch"
-	eapply "${FILESDIR}/${PN}-2.26.4220-server_path_check.patch"
+	eapply "${FILESDIR}/${PN}-2.26.4596-server_path_check.patch"
 
 	eapply_user
 
