@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE repositories SYSTEM "/dtd/repositories.dtd">
+<repositories xmlns="" version="1.0">
+  <repo quality="experimental" status="unofficial">
+    <name><![CDATA[musoverlay]]></name>
+    <description lang="en"><![CDATA[Musover's personal overlay]]></description>
+    <homepage>http://github.com/musover/musoverlay</homepage>
+    <owner type="person">
+      <email>maelask3@gmail.com</email>
+      <name><![CDATA[musover]]></name>
+    </owner>
+    <source type="git">git://github.com/musover/musoverlay.git</source>
+  </repo>
+</repositories>
+
