@@ -1,6 +1,6 @@
 # Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-EAPI="6"
+EAPI="7"
 
 K_SECURITY_UNSUPPORTED="1"
 K_DEBLOB_AVAILABLE=0
