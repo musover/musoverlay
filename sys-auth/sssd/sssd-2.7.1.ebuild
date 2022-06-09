@@ -85,7 +85,7 @@ BDEPEND="
 
 CONFIG_CHECK="~KEYS"
 
-PATCHES=( "${FILESDIR}"/${PN}-2.6.0-conditional-python-install.patch )
+PATCHES=( "${FILESDIR}"/${PN}-2.7.1-conditional-python-install.patch )
 
 MULTILIB_WRAPPED_HEADERS=(
 	/usr/include/ipa_hbac.h
