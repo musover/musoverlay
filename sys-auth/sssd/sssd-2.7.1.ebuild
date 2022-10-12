@@ -41,6 +41,7 @@ DEPEND="
 	>=sys-libs/tdb-1.2.9
 	>=sys-libs/tevent-0.9.16
 	>=sys-libs/ldb-1.1.17-r1:=
+	dev-libs/jose
 	virtual/libintl
 	acl? ( net-fs/cifs-utils[acl] )
 	locator? ( >=net-dns/c-ares-1.10.0-r1:=[${MULTILIB_USEDEP}] )
