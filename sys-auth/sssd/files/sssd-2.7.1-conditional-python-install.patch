@@ -1,5 +1,5 @@
 --- a/src/tools/analyzer/Makefile.am	2022-06-02 13:12:26.000000000 +0200
-+++ b/src/tools/analyzer/Makefile.am	2022-06-09 18:43:39.373410783 +0200
++++ b/src/tools/analyzer/Makefile.am	2022-11-03 22:32:05.910894574 +0100
 @@ -5,8 +5,10 @@
      $(NULL)
  
@@ -12,14 +12,14 @@
      __init__.py \
      source_files.py \
      source_journald.py \
-@@ -15,8 +17,7 @@
+@@ -15,8 +17,9 @@
      sss_analyze.py \
      $(NULL)
  
 -modulesdir = $(pkgpythondir)/modules
--dist_modules_DATA = \
-+  dist_modules_DATA = \
+ dist_modules_DATA = \
      modules/__init__.py \
      modules/request.py \
      $(NULL)
 +endif
++
