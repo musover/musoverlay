@@ -8,7 +8,7 @@ CKV="${PV/99/}"
 
 ETYPE="sources"
 
-EGIT_BRANCH="${PV/.9999/}/master"
+EGIT_BRANCH="${PV/.9999/}/main"
 EGIT_REPO_URI="https://github.com/zen-kernel/zen-kernel.git"
 inherit kernel-2 git-r3 eutils
 
