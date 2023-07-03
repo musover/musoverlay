@@ -3,7 +3,7 @@
 
 EAPI="7"
 RESTRICT="mirror"
-PYTHON_COMPAT=(python{3_7,3_8,3_9})
+PYTHON_COMPAT=(python{3_10,3_11})
 
 inherit elisp-common multiprocessing python-any-r1 toolchain-funcs
 
