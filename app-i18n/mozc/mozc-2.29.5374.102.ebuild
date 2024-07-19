@@ -41,14 +41,14 @@ REQUIRED_USE="|| ( emacs fcitx4 ibus )"
 RESTRICT="!test? ( test )"
 
 BDEPEND="$(python_gen_any_dep 'dev-python/six[${PYTHON_USEDEP}]')
-	>=dev-libs/protobuf-27.0:=
+	>=dev-libs/protobuf-27.0
 	dev-build/gyp
 	dev-build/ninja
 	virtual/pkgconfig
 	emacs? ( app-editors/emacs:* )
 	fcitx4? ( sys-devel/gettext )"
-DEPEND="=dev-cpp/abseil-cpp-20230802*
-	>=dev-libs/protobuf-27.0:=
+DEPEND=">=dev-cpp/abseil-cpp-20230802.0
+	>=dev-libs/protobuf-27.0
 	fcitx4? (
 		app-i18n/fcitx:4
 		virtual/libintl
@@ -73,8 +73,8 @@ DEPEND="=dev-cpp/abseil-cpp-20230802*
 		>=dev-cpp/gtest-1.8.0
 		dev-libs/jsoncpp
 	)"
-RDEPEND="=dev-cpp/abseil-cpp-20230802*
-	>=dev-libs/protobuf-3.0.0:=
+RDEPEND=">=dev-cpp/abseil-cpp-20230802.0
+	>=dev-libs/protobuf-27.0
 	emacs? ( app-editors/emacs:* )
 	fcitx4? (
 		app-i18n/fcitx:4
