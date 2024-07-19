@@ -42,8 +42,8 @@ RESTRICT="!test? ( test )"
 
 BDEPEND="$(python_gen_any_dep 'dev-python/six[${PYTHON_USEDEP}]')
 	>=dev-libs/protobuf-27.0:=
-	dev-util/gyp
-	dev-util/ninja
+	dev-build/gyp
+	dev-build/ninja
 	virtual/pkgconfig
 	emacs? ( app-editors/emacs:* )
 	fcitx4? ( sys-devel/gettext )"
