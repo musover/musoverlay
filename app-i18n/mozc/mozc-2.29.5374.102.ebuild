@@ -41,14 +41,14 @@ REQUIRED_USE="|| ( emacs fcitx4 ibus )"
 RESTRICT="!test? ( test )"
 
 BDEPEND="$(python_gen_any_dep 'dev-python/six[${PYTHON_USEDEP}]')
-	<dev-libs/protobuf-3.19
+	>=dev-libs/protobuf-27.0:=
 	dev-util/gyp
 	dev-util/ninja
 	virtual/pkgconfig
 	emacs? ( app-editors/emacs:* )
 	fcitx4? ( sys-devel/gettext )"
 DEPEND="=dev-cpp/abseil-cpp-20230802*
-	<dev-libs/protobuf-3.19:=
+	>=dev-libs/protobuf-27.0:=
 	fcitx4? (
 		app-i18n/fcitx:4
 		virtual/libintl
